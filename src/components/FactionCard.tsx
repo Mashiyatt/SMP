@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Users, Crown, Sword } from 'lucide-react';
+import { Shield, Users, Crown, Sword, MapPin, Calendar } from 'lucide-react';
 
 interface FactionCardProps {
   name: string;
@@ -11,6 +11,9 @@ interface FactionCardProps {
   description: string;
   power: number;
   color: 'emerald' | 'red' | 'blue' | 'purple' | 'gold';
+  founded?: string;
+  territory?: string;
+  specialty?: string;
 }
 
 const colorClasses = {
@@ -34,7 +37,10 @@ export const FactionCard = ({
   leader, 
   description, 
   power,
-  color 
+  color,
+  founded,
+  territory,
+  specialty
 }: FactionCardProps) => {
   return (
     <Card className={`group transition-all duration-500 card-glow ${colorClasses[color]} hover:shadow-2xl hover:-translate-y-1`}>
@@ -50,7 +56,7 @@ export const FactionCard = ({
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
           {description}
         </p>
@@ -71,6 +77,26 @@ export const FactionCard = ({
               <div className="font-medium">{members}</div>
             </div>
           </div>
+
+          {territory && (
+            <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
+              <MapPin className="w-4 h-4 text-secondary" />
+              <div>
+                <div className="text-muted-foreground">Territory</div>
+                <div className="font-medium text-xs">{territory}</div>
+              </div>
+            </div>
+          )}
+
+          {founded && (
+            <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
+              <Calendar className="w-4 h-4 text-accent" />
+              <div>
+                <div className="text-muted-foreground">Founded</div>
+                <div className="font-medium text-xs">{new Date(founded).toLocaleDateString()}</div>
+              </div>
+            </div>
+          )}
           
           <div className="flex items-center gap-2 col-span-2 group-hover:scale-105 transition-transform duration-300">
             <Sword className="w-4 h-4 text-destructive" />

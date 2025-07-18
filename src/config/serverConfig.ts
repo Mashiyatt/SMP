@@ -25,6 +25,9 @@ export const serverConfig = {
       description: "Elite warriors who dominate the battlefield with precision and tactical superiority.",
       power: 88,
       color: "gold" as const,
+      founded: "2024-12-15",
+      territory: "Northern Highlands",
+      specialty: "Strategic Warfare"
     },
     {
       name: "Team Cyanide",
@@ -34,6 +37,9 @@ export const serverConfig = {
       description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
       power: 92,
       color: "blue" as const,
+      founded: "2024-11-28",
+      territory: "Eastern Badlands",
+      specialty: "Tactical Operations"
     },
   ],
 

@@ -86,86 +86,92 @@ export const ServerStatus = ({ className }: ServerStatusProps) => {
   }, []);
 
   return (
-    <Card className={`p-4 w-full max-w-sm card-glow backdrop-blur-sm bg-card/95 animate-fade-in ${className}`}>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
+    <Card className={`p-6 card-glow backdrop-blur-sm bg-card/95 animate-fade-in ${className}`}>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+        {/* Server Status */}
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             {serverData.online ? (
-              <Wifi className="w-4 h-4 text-success animate-pulse-soft" />
+              <Wifi className="w-5 h-5 text-success animate-pulse-soft" />
             ) : (
-              <WifiOff className="w-4 h-4 text-destructive" />
+              <WifiOff className="w-5 h-5 text-destructive" />
             )}
-            <h3 className="font-semibold text-sm">Server Status</h3>
+            <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              serverData.online 
+                ? 'bg-success animate-pulse-glow' 
+                : 'bg-destructive'
+            }`} />
           </div>
-          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
-            serverData.online 
-              ? 'bg-success animate-pulse-glow' 
-              : 'bg-destructive'
-          }`} />
+          <div>
+            <h3 className="font-semibold text-lg">Server Status</h3>
+            <p className="text-sm text-muted-foreground">
+              {serverData.online ? 'Online' : 'Offline'}
+            </p>
+          </div>
         </div>
-        
-        <div className="space-y-3 text-sm">
-          {/* Server Address */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-1">
-                <Server className="w-3 h-3" />
-                Address:
-              </span>
-              <button 
-                onClick={() => copyToClipboard(serverConfig.server.address, 'address')}
-                className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-xs font-mono"
-                title="Click to copy address"
-              >
-                {serverConfig.server.address}
-                {copiedAddress ? (
-                  <Check className="w-3 h-3 text-success animate-scale-in" />
-                ) : (
-                  <Copy className="w-3 h-3" />
-                )}
-              </button>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Port:</span>
-              <button 
-                onClick={() => copyToClipboard(serverConfig.server.port, 'port')}
-                className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-xs font-mono"
-                title="Click to copy port"
-              >
-                {serverConfig.server.port}
-                {copiedPort ? (
-                  <Check className="w-3 h-3 text-success animate-scale-in" />
-                ) : (
-                  <Copy className="w-3 h-3" />
-                )}
-              </button>
-            </div>
+
+        {/* Server Address */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground flex items-center gap-1 text-sm">
+              <Server className="w-4 h-4" />
+              Address:
+            </span>
+            <button 
+              onClick={() => copyToClipboard(serverConfig.server.address, 'address')}
+              className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
+              title="Click to copy address"
+            >
+              {serverConfig.server.address}
+              {copiedAddress ? (
+                <Check className="w-4 h-4 text-success animate-scale-in" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
           </div>
           
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <Users className="w-3 h-3" />
-              Players:
-            </span>
-            <span className={`font-medium transition-colors duration-300 ${
-              serverData.online ? 'text-foreground' : 'text-muted-foreground'
-            }`}>
-              {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : 'Offline'}
-            </span>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-sm">Port:</span>
+            <button 
+              onClick={() => copyToClipboard(serverConfig.server.port, 'port')}
+              className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
+              title="Click to copy port"
+            >
+              {serverConfig.server.port}
+              {copiedPort ? (
+                <Check className="w-4 h-4 text-success animate-scale-in" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
           </div>
         </div>
         
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={checkServerStatus}
-          disabled={isLoading}
-          className="w-full hover:scale-105 transition-all duration-200"
-        >
-          <RefreshCw className={`w-3 h-3 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh Status
-        </Button>
+        {/* Player Count */}
+        <div className="flex items-center gap-3">
+          <Users className="w-5 h-5 text-accent" />
+          <div>
+            <h4 className="font-semibold text-lg">
+              {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : '0/50'}
+            </h4>
+            <p className="text-sm text-muted-foreground">Players Online</p>
+          </div>
+        </div>
+
+        {/* Refresh Button */}
+        <div className="flex justify-center md:justify-end">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={checkServerStatus}
+            disabled={isLoading}
+            className="hover:scale-105 transition-all duration-200"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
     </Card>
   );

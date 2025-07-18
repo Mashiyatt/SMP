@@ -38,27 +38,45 @@ const Index = () => {
   const [addressCopied, setAddressCopied] = useState(false);
   const { toast } = useToast();
 
-  const copyServerAddress = async () => {
+  const joinMinecraft = async () => {
+    const serverAddress = `${serverConfig.server.address}:${serverConfig.server.port}`;
+    
     try {
-      await navigator.clipboard.writeText(`${serverConfig.server.address}:${serverConfig.server.port}`);
+      // Try to copy to clipboard first
+      await navigator.clipboard.writeText(serverAddress);
       setAddressCopied(true);
+      
+      // Try to open Minecraft URI
+      const minecraftUri = `minecraft://?addExternalServer=${encodeURIComponent(serverConfig.server.name)}|${encodeURIComponent(serverAddress)}`;
+      window.location.href = minecraftUri;
+      
       toast({
-        title: "Server Address Copied!",
-        description: "Paste it in Minecraft to join the server!",
+        title: "Opening Minecraft...",
+        description: "Server address copied to clipboard as backup!",
       });
-      setTimeout(() => setAddressCopied(false), 2000);
+      
+      setTimeout(() => setAddressCopied(false), 3000);
     } catch (err) {
-      toast({
-        title: "Failed to copy",
-        description: "Could not copy server address.",
-        variant: "destructive",
-      });
+      // Fallback - just copy to clipboard
+      try {
+        await navigator.clipboard.writeText(serverAddress);
+        toast({
+          title: "Server Address Copied!",
+          description: "Paste it in Minecraft to join the server!",
+        });
+      } catch (clipboardErr) {
+        toast({
+          title: "Unable to copy",
+          description: `Server: ${serverAddress}`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
   return (
     <div className="min-h-screen relative">
-      {/* Hero Section with Enhanced Animations */}
+      {/* Hero Section with Enhanced Hero Text */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
         <div className="container mx-auto max-w-6xl">
           {/* Animated background elements */}
@@ -67,13 +85,13 @@ const Index = () => {
             <div className="absolute bottom-20 right-1/4 w-48 h-48 bg-accent/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-fade-in relative">
-            <span className="inline-block animate-shimmer bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent bg-[length:200px_100%]">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-hero font-black mb-6 animate-fade-in relative">
+            <span className="inline-block bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent animate-shimmer bg-[length:200px_100%] drop-shadow-2xl">
               {serverConfig.server.name}
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in font-medium" style={{ animationDelay: '200ms' }}>
             {serverConfig.server.description}
           </p>
           
@@ -84,13 +102,13 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
             <Button 
               size="lg" 
-              className="gold-glow hover:scale-105 transition-all duration-300 group"
-              onClick={copyServerAddress}
+              className="gold-glow hover:scale-105 transition-all duration-300 group text-lg px-8 py-4"
+              onClick={joinMinecraft}
             >
               {addressCopied ? (
                 <>
                   <Target className="w-5 h-5 mr-2 animate-scale-in" />
-                  Address Copied!
+                  Opening Minecraft!
                 </>
               ) : (
                 <>
@@ -102,7 +120,7 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="lg"
-              className="hover:scale-105 transition-all duration-300 group"
+              className="hover:scale-105 transition-all duration-300 group text-lg px-8 py-4"
               onClick={() => window.open(serverConfig.social.discord, '_blank')}
             >
               <MessageCircle className="w-5 h-5 mr-2 group-hover:bounce transition-all duration-300" />
@@ -112,26 +130,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Server Status and Content Section */}
-      <section className="py-8 px-6">
+      {/* Full-width Server Status Section */}
+      <section className="py-8 px-6 bg-muted/20 border-y border-border">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <div className="flex-1">
-              <div className="text-center lg:text-left mb-8">
-                <h2 className="text-4xl font-bold mb-4 flex items-center justify-center lg:justify-start gap-3">
-                  <Castle className="w-8 h-8 text-primary animate-pulse-soft" />
-                  About {serverConfig.server.name}
-                </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl">
-                  Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory.
-                  Join epic battles, build massive fortresses, and become a legend in the world of {serverConfig.server.name}.
-                </p>
-              </div>
-            </div>
-            
-            <div className="lg:sticky lg:top-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
-              <ServerStatus />
-            </div>
+          <ServerStatus className="w-full" />
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-12 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+              <Castle className="w-8 h-8 text-primary animate-pulse-soft" />
+              About {serverConfig.server.name}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory.
+              Join epic battles, build massive fortresses, and become a legend in the world of {serverConfig.server.name}.
+            </p>
           </div>
         </div>
       </section>
