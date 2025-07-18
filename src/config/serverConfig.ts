@@ -25,7 +25,7 @@ export const serverConfig = {
       description: "Elite warriors who dominate the battlefield with precision and tactical superiority.",
       power: 88,
       color: "gold" as const,
-      founded: "2025-12-15",
+      founded: "2025-06-23",
       territory: "Northern Highlands",
       specialty: "Strategic Warfare"
     },
@@ -37,7 +37,7 @@ export const serverConfig = {
       description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
       power: 80,
       color: "gold" as const,
-      founded: "2024-11-28",
+      founded: "2025-06-25",
       territory: "Eastern Plains",
       specialty: "Tactical Operations"
     },
