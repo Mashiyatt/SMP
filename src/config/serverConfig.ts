@@ -46,22 +46,21 @@ export const serverConfig = {
   // News Configuration
   news: [
     {
-      id: 2,
+  id: 2, 
+  title: "WAR BREAKS OUT",
+  date: "2025-06-20",
+  category: "Update",
+  content: "A violent assult from the exceliver triggered a all out war amongst the server, both teams are setting up their bases to adapt to these new circumstances",
+  featured: true,
+    },
+    {
+      id: 1,
       title: "Server Launch Event",
       date: "2025-05-31",
       category: "Event",
       content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
       featured: true,
     },
-  
-{
-  id: 1, 
-  title: "WAR BREAKS OUT",
-  date: "2025-06-20",
-  category: "Update",
-  content: "A violent assult from the exceliver triggered a all out war amongst the server, both teams are setting up their bases to adapt to these new circumstances",
-  featured: true,
-},
 ],
   // Features Configuration
   features: [
