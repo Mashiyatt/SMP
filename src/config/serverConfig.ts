@@ -7,7 +7,7 @@ export const serverConfig = {
     tagline: "Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory. Join epic battles, build massive fortresses, and become a legend in the world of Golden SMP.",
     address: "play.golden-smp.xyz",
     port: "25777",
-    maxPlayers: ?,
+    maxPlayers: 0,
   },
 
   // Social Links
@@ -35,7 +35,7 @@ export const serverConfig = {
       members: 5,
       leader: "Mashiyat8291",
       description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
-      power: ?,
+      power: 80,
       color: "blue" as const,
       founded: "2024-11-28",
       territory: "Eastern Badlands",
