@@ -48,7 +48,7 @@ export const serverConfig = {
     {
       id: 1,
       title: "Server Launch Event",
-      date: "2025-06-28",
+      date: "2025-05-31",
       category: "Event",
       content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
       featured: true,
