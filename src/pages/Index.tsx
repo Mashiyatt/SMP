@@ -86,7 +86,7 @@ const Index = () => {
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-hero font-black mb-6 animate-fade-in relative">
-            <span className="inline-block bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent animate-shimmer bg-[length:200px_100%] drop-shadow-2xl">
+            <span className="text-gradient animate-bounce-gentle drop-shadow-2xl">
               {serverConfig.server.name}
             </span>
           </h1>
@@ -131,9 +131,9 @@ const Index = () => {
       </section>
 
       {/* Full-width Server Status Section */}
-      <section className="py-8 px-6 bg-muted/20 border-y border-border">
-        <div className="container mx-auto max-w-6xl">
-          <ServerStatus className="w-full" />
+      <section className="py-8 bg-muted/20 border-y border-border">
+        <div className="w-full px-6">
+          <ServerStatus className="w-full max-w-none" />
         </div>
       </section>
 

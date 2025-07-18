@@ -86,8 +86,8 @@ export const ServerStatus = ({ className }: ServerStatusProps) => {
   }, []);
 
   return (
-    <Card className={`p-6 card-glow backdrop-blur-sm bg-card/95 animate-fade-in ${className}`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+    <Card className={`p-6 card-glow backdrop-blur-sm bg-card/95 animate-fade-in mx-auto ${className}`}>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center max-w-7xl mx-auto">
         {/* Server Status */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
