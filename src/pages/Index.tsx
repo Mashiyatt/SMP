@@ -1,3 +1,4 @@
+
 import { ServerStatus } from '@/components/ServerStatus';
 import { FactionCard } from '@/components/FactionCard';
 import { FeatureCard } from '@/components/FeatureCard';
@@ -13,10 +14,35 @@ import {
   Map,
   Target,
   Heart,
-  ExternalLink
+  ExternalLink,
+  MessageCircle,
+  Copy
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 const Index = () => {
+  const [addressCopied, setAddressCopied] = useState(false);
+  const { toast } = useToast();
+
+  const copyServerAddress = async () => {
+    try {
+      await navigator.clipboard.writeText('play.golden-smp.xyz:25777');
+      setAddressCopied(true);
+      toast({
+        title: "Server Address Copied!",
+        description: "Paste it in Minecraft to join the server!",
+      });
+      setTimeout(() => setAddressCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy server address.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const factions = [
     {
       name: "The Dawnseekers",
@@ -97,46 +123,62 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      <ServerStatus />
-      
       {/* Hero Section */}
       <section className="relative py-20 px-6 text-center">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-6xl">
           <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-fade-in">
             Golden SMP
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in">
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
             Premium Minecraft Faction Warfare
           </p>
-          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in">
+          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '400ms' }}>
             Golden SMP is a premium Minecraft Bedrock server focused on faction warfare and strategic gameplay.
             Build your empire, forge alliances, and dominate the battlefield in an immersive survival experience.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-            <Button size="lg" className="gold-glow">
-              <Target className="w-5 h-5 mr-2" />
-              Join the Battle
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
+            <Button 
+              size="lg" 
+              className="gold-glow hover:scale-105 transition-all duration-300"
+              onClick={copyServerAddress}
+            >
+              {addressCopied ? <Target className="w-5 h-5 mr-2" /> : <Copy className="w-5 h-5 mr-2" />}
+              {addressCopied ? 'Address Copied!' : 'Join the Battle'}
             </Button>
-            <Button variant="outline" size="lg">
-              <ExternalLink className="w-5 h-5 mr-2" />
-              View Rules
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="hover:scale-105 transition-all duration-300"
+              onClick={() => window.open('https://discord.gg/zaPtmuRcsT', '_blank')}
+            >
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Join Discord
             </Button>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-16 px-6">
+      {/* Server Status Section - Now integrated into the main content */}
+      <section className="py-8 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              <Castle className="w-8 h-8 text-primary" />
-              About Golden SMP
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory.
-            </p>
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex-1">
+              <div className="text-center lg:text-left mb-8">
+                <h2 className="text-4xl font-bold mb-4 flex items-center justify-center lg:justify-start gap-3">
+                  <Castle className="w-8 h-8 text-primary" />
+                  About Golden SMP
+                </h2>
+                <p className="text-lg text-muted-foreground max-w-2xl">
+                  Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory.
+                  Join epic battles, build massive fortresses, and become a legend in the world of Golden SMP.
+                </p>
+              </div>
+            </div>
+            
+            <div className="lg:sticky lg:top-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
+              <ServerStatus />
+            </div>
           </div>
         </div>
       </section>
@@ -156,7 +198,7 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {factions.map((faction, index) => (
-              <div key={faction.name} className="animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
+              <div key={faction.name} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 150}ms` }}>
                 <FactionCard {...faction} />
               </div>
             ))}
@@ -179,7 +221,7 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <div key={feature.title} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <div key={feature.title} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
                 <FeatureCard {...feature} />
               </div>
             ))}
@@ -198,11 +240,18 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <Button variant="outline">
-              <Users className="w-4 h-4 mr-2" />
+            <Button 
+              variant="outline"
+              className="hover:scale-105 transition-all duration-300"
+              onClick={() => window.open('https://discord.gg/zaPtmuRcsT', '_blank')}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
               Discord Community
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              className="hover:scale-105 transition-all duration-300"
+            >
               <ExternalLink className="w-4 h-4 mr-2" />
               Server Rules
             </Button>

@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Users, Crown, Sword } from 'lucide-react';
@@ -13,11 +14,11 @@ interface FactionCardProps {
 }
 
 const colorClasses = {
-  emerald: 'border-minecraft-green/50 bg-minecraft-green/5',
-  red: 'border-minecraft-red/50 bg-minecraft-red/5',
-  blue: 'border-minecraft-blue/50 bg-minecraft-blue/5',
-  purple: 'border-secondary/50 bg-secondary/5',
-  gold: 'border-primary/50 bg-primary/5',
+  emerald: 'border-minecraft-green/50 bg-minecraft-green/5 hover:border-minecraft-green/70',
+  red: 'border-minecraft-red/50 bg-minecraft-red/5 hover:border-minecraft-red/70',
+  blue: 'border-minecraft-blue/50 bg-minecraft-blue/5 hover:border-minecraft-blue/70',
+  purple: 'border-secondary/50 bg-secondary/5 hover:border-secondary/70',
+  gold: 'border-primary/50 bg-primary/5 hover:border-primary/70',
 };
 
 const statusColors = {
@@ -36,26 +37,26 @@ export const FactionCard = ({
   color 
 }: FactionCardProps) => {
   return (
-    <Card className={`group hover:scale-105 transition-all duration-300 card-glow ${colorClasses[color]}`}>
+    <Card className={`group transition-all duration-500 card-glow ${colorClasses[color]} hover:shadow-2xl hover:-translate-y-1`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Shield className="w-5 h-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-lg group-hover:text-primary transition-colors duration-300">
+            <Shield className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
             {name}
           </CardTitle>
-          <Badge className={statusColors[status]} variant="secondary">
+          <Badge className={`${statusColors[status]} animate-fade-in`} variant="secondary">
             {status}
           </Badge>
         </div>
       </CardHeader>
       
       <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
           {description}
         </p>
         
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
             <Crown className="w-4 h-4 text-primary" />
             <div>
               <div className="text-muted-foreground">Leader</div>
@@ -63,7 +64,7 @@ export const FactionCard = ({
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
             <Users className="w-4 h-4 text-accent" />
             <div>
               <div className="text-muted-foreground">Members</div>
@@ -71,18 +72,21 @@ export const FactionCard = ({
             </div>
           </div>
           
-          <div className="flex items-center gap-2 col-span-2">
+          <div className="flex items-center gap-2 col-span-2 group-hover:scale-105 transition-transform duration-300">
             <Sword className="w-4 h-4 text-destructive" />
-            <div>
-              <div className="text-muted-foreground">Power Level</div>
+            <div className="w-full">
+              <div className="text-muted-foreground mb-1">Power Level</div>
               <div className="flex items-center gap-2">
-                <div className="flex-1 bg-muted rounded-full h-2">
+                <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
                   <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(power, 100)}%` }}
+                    className="bg-primary h-2 rounded-full transition-all duration-1000 ease-out group-hover:bg-primary-glow animate-pulse-glow"
+                    style={{ 
+                      width: `${Math.min(power, 100)}%`,
+                      transitionDelay: '200ms'
+                    }}
                   />
                 </div>
-                <span className="font-medium text-xs">{power}</span>
+                <span className="font-medium text-xs group-hover:text-primary transition-colors duration-300">{power}</span>
               </div>
             </div>
           </div>
