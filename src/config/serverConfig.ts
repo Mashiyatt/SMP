@@ -46,7 +46,7 @@ export const serverConfig = {
   // News Configuration
   news: [
     {
-      id: 1,
+      id: 2,
       title: "Server Launch Event",
       date: "2025-05-31",
       category: "Event",
@@ -55,11 +55,11 @@ export const serverConfig = {
     },
   
 {
-  id: 2, 
+  id: 1, 
   title: "WAR BREAKS OUT",
   date: "2025-06-20",
   category: "Update",
-  content: "A violent assult from the exceliver triggered a all out war among the server, both teams are setting up their base to adapt to these new circumstances",
+  content: "A violent assult from the exceliver triggered a all out war amongst the server, both teams are setting up their bases to adapt to these new circumstances",
   featured: true,
 },
 ],
