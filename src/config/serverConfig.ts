@@ -33,7 +33,7 @@ export const serverConfig = {
       name: "Team Cyanide",
       status: "active" as const,
       members: 5,
-      leader: "Mashiyat8291",
+      leader: "Masiat8291",
       description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
       power: 80,
       color: "gold" as const,
@@ -41,7 +41,7 @@ export const serverConfig = {
       territory: "Eastern Plains",
       specialty: "Tactical Operations"
     },
-  ],
+         ],
 
   // News Configuration
   news: [
@@ -53,8 +53,16 @@ export const serverConfig = {
       content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
       featured: true,
     },
-  ],
-
+  
+{
+  id: 2, 
+  title: "WAR BREAKS OUT",
+  date: "2025-06-20",
+  category: "Update",
+  content: "A violent assult from the exceliver triggered a all out war among the server, both teams are setting up their base to adapt to these new circumstances",
+  featured: true,
+},
+],
   // Features Configuration
   features: [
     {
