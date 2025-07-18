@@ -2,7 +2,9 @@
 import { ServerStatus } from '@/components/ServerStatus';
 import { FactionCard } from '@/components/FactionCard';
 import { FeatureCard } from '@/components/FeatureCard';
+import { NewsCard } from '@/components/NewsCard';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Castle, 
   Sword, 
@@ -16,10 +18,21 @@ import {
   Heart,
   ExternalLink,
   MessageCircle,
-  Copy
+  Copy,
+  Newspaper
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { serverConfig } from '@/config/serverConfig';
+
+const iconMap = {
+  Sword,
+  Castle,
+  Crown,
+  Pickaxe,
+  Map,
+  Heart,
+};
 
 const Index = () => {
   const [addressCopied, setAddressCopied] = useState(false);
@@ -27,7 +40,7 @@ const Index = () => {
 
   const copyServerAddress = async () => {
     try {
-      await navigator.clipboard.writeText('play.golden-smp.xyz:25777');
+      await navigator.clipboard.writeText(`${serverConfig.server.address}:${serverConfig.server.port}`);
       setAddressCopied(true);
       toast({
         title: "Server Address Copied!",
@@ -43,135 +56,75 @@ const Index = () => {
     }
   };
 
-  const factions = [
-    {
-      name: "The Dawnseekers",
-      status: "active" as const,
-      members: 12,
-      leader: "SunKnight_47",
-      description: "Elite warriors who fight for honor and glory in the golden dawn.",
-      power: 85,
-      color: "gold" as const,
-    },
-    {
-      name: "Shadow Collective",
-      status: "recruiting" as const,
-      members: 8,
-      leader: "DarkBlade_X",
-      description: "Masters of stealth and strategy, operating from the shadows.",
-      power: 72,
-      color: "purple" as const,
-    },
-    {
-      name: "Iron Legion",
-      status: "active" as const,
-      members: 15,
-      leader: "IronCommander",
-      description: "Heavily fortified faction known for their impenetrable defenses.",
-      power: 91,
-      color: "blue" as const,
-    },
-    {
-      name: "Phoenix Rising",
-      status: "inactive" as const,
-      members: 5,
-      leader: "FireBird_99",
-      description: "Once mighty faction, now seeking to rise from the ashes.",
-      power: 45,
-      color: "red" as const,
-    },
-  ];
-
-  const features = [
-    {
-      icon: Sword,
-      title: "Epic PvP Combat",
-      description: "Engage in intense faction warfare with custom weapons and armor. Master the art of combat to dominate the battlefield.",
-      color: "primary" as const,
-    },
-    {
-      icon: Castle,
-      title: "Base Building",
-      description: "Construct massive fortresses and defensive structures. Protect your faction's resources and territory from invaders.",
-      color: "secondary" as const,
-    },
-    {
-      icon: Crown,
-      title: "Faction Leadership",
-      description: "Rise through the ranks to become a faction leader. Command armies and forge alliances to expand your empire.",
-      color: "accent" as const,
-    },
-    {
-      icon: Pickaxe,
-      title: "Resource Mining",
-      description: "Discover rare ores and materials deep underground. Use these resources to craft powerful equipment and structures.",
-      color: "primary" as const,
-    },
-    {
-      icon: Map,
-      title: "Territory Control",
-      description: "Claim and defend strategic locations across the vast world. Control key resources and trade routes.",
-      color: "secondary" as const,
-    },
-    {
-      icon: Heart,
-      title: "Community Events",
-      description: "Participate in server-wide events, competitions, and special challenges. Win exclusive rewards and recognition.",
-      color: "accent" as const,
-    },
-  ];
-
   return (
     <div className="min-h-screen relative">
-      {/* Hero Section */}
-      <section className="relative py-20 px-6 text-center">
+      {/* Hero Section with Enhanced Animations */}
+      <section className="relative py-20 px-6 text-center overflow-hidden">
         <div className="container mx-auto max-w-6xl">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-fade-in">
-            Golden SMP
+          {/* Animated background elements */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-20 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-20 right-1/4 w-48 h-48 bg-accent/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-fade-in relative">
+            <span className="inline-block animate-shimmer bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent bg-[length:200px_100%]">
+              {serverConfig.server.name}
+            </span>
           </h1>
+          
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
-            Premium Minecraft Faction Warfare
+            {serverConfig.server.description}
           </p>
+          
           <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '400ms' }}>
-            Golden SMP is a premium Minecraft Bedrock server focused on faction warfare and strategic gameplay.
-            Build your empire, forge alliances, and dominate the battlefield in an immersive survival experience.
+            {serverConfig.server.tagline}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
             <Button 
               size="lg" 
-              className="gold-glow hover:scale-105 transition-all duration-300"
+              className="gold-glow hover:scale-105 transition-all duration-300 group"
               onClick={copyServerAddress}
             >
-              {addressCopied ? <Target className="w-5 h-5 mr-2" /> : <Copy className="w-5 h-5 mr-2" />}
-              {addressCopied ? 'Address Copied!' : 'Join the Battle'}
+              {addressCopied ? (
+                <>
+                  <Target className="w-5 h-5 mr-2 animate-scale-in" />
+                  Address Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  Join the Battle
+                </>
+              )}
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              className="hover:scale-105 transition-all duration-300"
-              onClick={() => window.open('https://discord.gg/zaPtmuRcsT', '_blank')}
+              className="hover:scale-105 transition-all duration-300 group"
+              onClick={() => window.open(serverConfig.social.discord, '_blank')}
             >
-              <MessageCircle className="w-5 h-5 mr-2" />
+              <MessageCircle className="w-5 h-5 mr-2 group-hover:bounce transition-all duration-300" />
               Join Discord
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Server Status Section - Now integrated into the main content */}
+      {/* Server Status and Content Section */}
       <section className="py-8 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             <div className="flex-1">
               <div className="text-center lg:text-left mb-8">
                 <h2 className="text-4xl font-bold mb-4 flex items-center justify-center lg:justify-start gap-3">
-                  <Castle className="w-8 h-8 text-primary" />
-                  About Golden SMP
+                  <Castle className="w-8 h-8 text-primary animate-pulse-soft" />
+                  About {serverConfig.server.name}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl">
                   Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory.
-                  Join epic battles, build massive fortresses, and become a legend in the world of Golden SMP.
+                  Join epic battles, build massive fortresses, and become a legend in the world of {serverConfig.server.name}.
                 </p>
               </div>
             </div>
@@ -183,49 +136,96 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Factions Section */}
-      <section className="py-16 px-6">
+      {/* Main Content Tabs */}
+      <section className="py-8 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              <Shield className="w-8 h-8 text-primary" />
-              Active Factions
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Join the most powerful factions or start your own legacy
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {factions.map((faction, index) => (
-              <div key={faction.name} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 150}ms` }}>
-                <FactionCard {...faction} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          <Tabs defaultValue="factions" className="w-full">
+            <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto mb-12">
+              <TabsTrigger value="factions" className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span className="hidden sm:inline">Factions</span>
+              </TabsTrigger>
+              <TabsTrigger value="features" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                <span className="hidden sm:inline">Features</span>
+              </TabsTrigger>
+              <TabsTrigger value="news" className="flex items-center gap-2">
+                <Newspaper className="w-4 h-4" />
+                <span className="hidden sm:inline">News</span>
+              </TabsTrigger>
+            </TabsList>
 
-      {/* Features Section */}
-      <section className="py-16 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              <Zap className="w-8 h-8 text-primary" />
-              Server Features
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Discover what makes Golden SMP the ultimate faction warfare experience
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <div key={feature.title} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
-                <FeatureCard {...feature} />
+            {/* Factions Tab */}
+            <TabsContent value="factions" className="space-y-12">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                  <Shield className="w-8 h-8 text-primary" />
+                  Active Factions
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Choose your allegiance and fight for glory
+                </p>
               </div>
-            ))}
-          </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {serverConfig.factions.map((faction, index) => (
+                  <div key={faction.name} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 150}ms` }}>
+                    <FactionCard {...faction} />
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* Features Tab */}
+            <TabsContent value="features" className="space-y-12">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                  <Zap className="w-8 h-8 text-primary" />
+                  Server Features
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Discover what makes {serverConfig.server.name} the ultimate faction warfare experience
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {serverConfig.features.map((feature, index) => {
+                  const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
+                  return (
+                    <div key={feature.title} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
+                      <FeatureCard 
+                        icon={IconComponent} 
+                        title={feature.title}
+                        description={feature.description}
+                        color={feature.color}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </TabsContent>
+
+            {/* News Tab */}
+            <TabsContent value="news" className="space-y-12">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                  <Newspaper className="w-8 h-8 text-primary" />
+                  Latest News
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Stay updated with the latest server announcements and events
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {serverConfig.news.map((newsItem, index) => (
+                  <div key={newsItem.id} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
+                    <NewsCard {...newsItem} />
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
@@ -233,7 +233,7 @@ const Index = () => {
       <footer className="py-12 px-6 border-t border-border">
         <div className="container mx-auto max-w-6xl text-center">
           <div className="mb-6">
-            <h3 className="text-2xl font-bold text-gradient mb-2">Golden SMP</h3>
+            <h3 className="text-2xl font-bold text-gradient mb-2">{serverConfig.server.name}</h3>
             <p className="text-muted-foreground">
               The ultimate Minecraft Bedrock faction warfare experience
             </p>
@@ -242,23 +242,23 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <Button 
               variant="outline"
-              className="hover:scale-105 transition-all duration-300"
-              onClick={() => window.open('https://discord.gg/zaPtmuRcsT', '_blank')}
+              className="hover:scale-105 transition-all duration-300 group"
+              onClick={() => window.open(serverConfig.social.discord, '_blank')}
             >
-              <MessageCircle className="w-4 h-4 mr-2" />
+              <MessageCircle className="w-4 h-4 mr-2 group-hover:bounce" />
               Discord Community
             </Button>
             <Button 
               variant="outline"
-              className="hover:scale-105 transition-all duration-300"
+              className="hover:scale-105 transition-all duration-300 group"
             >
-              <ExternalLink className="w-4 h-4 mr-2" />
+              <ExternalLink className="w-4 h-4 mr-2 group-hover:rotate-45 transition-transform duration-300" />
               Server Rules
             </Button>
           </div>
           
           <p className="text-sm text-muted-foreground">
-            © 2025 Golden SMP. All rights reserved. | Created by Mashiyatt
+            © 2025 {serverConfig.server.name}. All rights reserved. | Created by Mashiyatt
           </p>
         </div>
       </footer>

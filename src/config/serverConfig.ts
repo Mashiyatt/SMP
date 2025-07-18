@@ -1,0 +1,107 @@
+
+export const serverConfig = {
+  // Server Information
+  server: {
+    name: "Golden SMP",
+    description: "Premium Minecraft Faction Warfare",
+    tagline: "Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory. Join epic battles, build massive fortresses, and become a legend in the world of Golden SMP.",
+    address: "play.golden-smp.xyz",
+    port: "25777",
+    maxPlayers: 50,
+  },
+
+  // Social Links
+  social: {
+    discord: "https://discord.gg/zaPtmuRcsT",
+  },
+
+  // Factions Configuration
+  factions: [
+    {
+      name: "Excaliver",
+      status: "active" as const,
+      members: 12,
+      leader: "Nishat10x",
+      description: "Elite warriors who dominate the battlefield with precision and tactical superiority.",
+      power: 88,
+      color: "gold" as const,
+    },
+    {
+      name: "Team Cyanide",
+      status: "recruiting" as const,
+      members: 15,
+      leader: "Mashiyat8291",
+      description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
+      power: 92,
+      color: "blue" as const,
+    },
+  ],
+
+  // News Configuration
+  news: [
+    {
+      id: 1,
+      title: "Server Launch Event",
+      date: "2025-01-15",
+      category: "Event",
+      content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
+      featured: true,
+    },
+    {
+      id: 2,
+      title: "New PvP Arena",
+      date: "2025-01-10",
+      category: "Update",
+      content: "A massive new PvP arena has been constructed at spawn. Test your skills against other players!",
+      featured: false,
+    },
+    {
+      id: 3,
+      title: "Faction Recruitment",
+      date: "2025-01-08",
+      category: "Announcement",
+      content: "Both Excaliver and Team Cyanide are actively recruiting new members. Choose your side wisely!",
+      featured: false,
+    },
+  ],
+
+  // Features Configuration
+  features: [
+    {
+      title: "Epic PvP Combat",
+      description: "Engage in intense faction warfare with custom weapons and armor. Master the art of combat to dominate the battlefield.",
+      icon: "Sword",
+      color: "primary" as const,
+    },
+    {
+      title: "Base Building",
+      description: "Construct massive fortresses and defensive structures. Protect your faction's resources and territory from invaders.",
+      icon: "Castle",
+      color: "secondary" as const,
+    },
+    {
+      title: "Faction Leadership",
+      description: "Rise through the ranks to become a faction leader. Command armies and forge alliances to expand your empire.",
+      icon: "Crown",
+      color: "accent" as const,
+    },
+    {
+      title: "Resource Mining",
+      description: "Discover rare ores and materials deep underground. Use these resources to craft powerful equipment and structures.",
+      icon: "Pickaxe",
+      color: "primary" as const,
+    },
+    {
+      title: "Territory Control",
+      description: "Claim and defend strategic locations across the vast world. Control key resources and trade routes.",
+      icon: "Map",
+      color: "secondary" as const,
+    },
+    {
+      title: "Community Events",
+      description: "Participate in server-wide events, competitions, and special challenges. Win exclusive rewards and recognition.",
+      icon: "Heart",
+      color: "accent" as const,
+    },
+  ],
+};
