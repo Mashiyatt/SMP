@@ -7,7 +7,7 @@ export const serverConfig = {
     tagline: "Experience the ultimate faction warfare server where strategy, skill, and teamwork determine victory. Join epic battles, build massive fortresses, and become a legend in the world of Golden SMP.",
     address: "play.golden-smp.xyz",
     port: "25777",
-    maxPlayers: 50,
+    maxPlayers: ?,
   },
 
   // Social Links
@@ -20,7 +20,7 @@ export const serverConfig = {
     {
       name: "Excaliver",
       status: "active" as const,
-      members: 12,
+      members: 5,
       leader: "Nishat10x",
       description: "Elite warriors who dominate the battlefield with precision and tactical superiority.",
       power: 88,
@@ -32,10 +32,10 @@ export const serverConfig = {
     {
       name: "Team Cyanide",
       status: "recruiting" as const,
-      members: 15,
+      members: 5,
       leader: "Mashiyat8291",
       description: "Deadly faction known for their strategic warfare and unbreakable brotherhood.",
-      power: 92,
+      power: ?,
       color: "blue" as const,
       founded: "2024-11-28",
       territory: "Eastern Badlands",
@@ -48,26 +48,10 @@ export const serverConfig = {
     {
       id: 1,
       title: "Server Launch Event",
-      date: "2025-01-15",
+      date: "2025-06-28",
       category: "Event",
       content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
       featured: true,
-    },
-    {
-      id: 2,
-      title: "New PvP Arena",
-      date: "2025-01-10",
-      category: "Update",
-      content: "A massive new PvP arena has been constructed at spawn. Test your skills against other players!",
-      featured: false,
-    },
-    {
-      id: 3,
-      title: "Faction Recruitment",
-      date: "2025-01-08",
-      category: "Announcement",
-      content: "Both Excaliver and Team Cyanide are actively recruiting new members. Choose your side wisely!",
-      featured: false,
     },
   ],
 
