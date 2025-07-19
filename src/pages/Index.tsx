@@ -19,11 +19,14 @@ import {
   ExternalLink,
   MessageCircle,
   Copy,
-  Newspaper
+  Newspaper,
+  Palette,
+  Crosshair
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { serverConfig } from '@/config/serverConfig';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const iconMap = {
   Sword,
@@ -37,6 +40,7 @@ const iconMap = {
 const Index = () => {
   const [addressCopied, setAddressCopied] = useState(false);
   const { toast } = useToast();
+  const { theme, toggleTheme, heroBackground } = useTheme();
 
   const joinMinecraft = async () => {
     const serverAddress = `${serverConfig.server.address}:${serverConfig.server.port}`;
@@ -76,9 +80,34 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* Hero Section with Enhanced Hero Text */}
-      <section className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="container mx-auto max-w-6xl">
+      {/* Theme Toggle Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleTheme}
+          className="hover:scale-105 transition-all duration-300 group backdrop-blur-sm"
+        >
+          {theme === 'golden' ? (
+            <>
+              <Crosshair className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+              War Mode
+            </>
+          ) : (
+            <>
+              <Palette className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+              Golden Mode
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative py-20 px-6 text-center overflow-hidden hero-background"
+        style={{ backgroundImage: `url(${heroBackground})` }}
+      >
+        <div className="container mx-auto max-w-6xl hero-content">
           {/* Animated background elements */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute top-20 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
@@ -120,7 +149,7 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="lg"
-              className="hover:scale-105 transition-all duration-300 group text-lg px-8 py-4"
+              className="hover:scale-105 transition-all duration-300 group text-lg px-8 py-4 backdrop-blur-sm"
               onClick={() => window.open(serverConfig.social.discord, '_blank')}
             >
               <MessageCircle className="w-5 h-5 mr-2 group-hover:bounce transition-all duration-300" />
@@ -131,9 +160,9 @@ const Index = () => {
       </section>
 
       {/* Full-width Server Status Section */}
-      <section className="py-8 bg-muted/20 border-y border-border">
-        <div className="w-full px-6">
-          <ServerStatus className="w-full max-w-none" />
+      <section className="w-full bg-muted/20 border-y border-border">
+        <div className="w-full">
+          <ServerStatus />
         </div>
       </section>
 
@@ -256,7 +285,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <div className="flex justify-center mb-6">
             <Button 
               variant="outline"
               className="hover:scale-105 transition-all duration-300 group"
@@ -264,13 +293,6 @@ const Index = () => {
             >
               <MessageCircle className="w-4 h-4 mr-2 group-hover:bounce" />
               Discord Community
-            </Button>
-            <Button 
-              variant="outline"
-              className="hover:scale-105 transition-all duration-300 group"
-            >
-              <ExternalLink className="w-4 h-4 mr-2 group-hover:rotate-45 transition-transform duration-300" />
-              Server Rules
             </Button>
           </div>
           

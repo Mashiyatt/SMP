@@ -10,6 +10,15 @@ export const serverConfig = {
     maxPlayers: 0,
   },
 
+  // Theme Configuration
+  theme: {
+    current: "golden", // "golden" or "war"
+    heroBackground: {
+      golden: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1920&q=80", // blue starry night
+      war: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80", // matrix movie still
+    }
+  },
+
   // Social Links
   social: {
     discord: "https://discord.gg/zaPtmuRcsT",
@@ -41,17 +50,17 @@ export const serverConfig = {
       territory: "Eastern Plains",
       specialty: "Tactical Operations"
     },
-         ],
+  ],
 
   // News Configuration
   news: [
     {
-  id: 2, 
-  title: "WAR BREAKS OUT",
-  date: "2025-06-20",
-  category: "Update",
-  content: "A violent assult from the exceliver triggered a all out war amongst the server, both teams are setting up their bases to adapt to these new circumstances",
-  featured: true,
+      id: 2, 
+      title: "WAR BREAKS OUT",
+      date: "2025-06-20",
+      category: "Update",
+      content: "A violent assult from the exceliver triggered a all out war amongst the server, both teams are setting up their bases to adapt to these new circumstances",
+      featured: true,
     },
     {
       id: 1,
@@ -61,7 +70,8 @@ export const serverConfig = {
       content: "Golden SMP is officially launching! Join us for epic battles and exclusive rewards for early players.",
       featured: true,
     },
-],
+  ],
+
   // Features Configuration
   features: [
     {

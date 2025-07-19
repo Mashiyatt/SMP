@@ -1,10 +1,9 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .theme-golden {
     /* Enhanced Golden SMP Color Palette */
     --background: 223 47% 8%;      /* Deeper navy blue */
     --foreground: 213 31% 93%;     /* Brighter white */
@@ -58,6 +57,53 @@
     --minecraft-blue: 220 100% 55%;   
   }
 
+  .theme-war {
+    /* War Theme Color Palette */
+    --background: 0 0% 5%;           /* Deep black */
+    --foreground: 0 0% 95%;          /* Pure white */
+    
+    --primary: 120 100% 45%;         /* Military green */
+    --primary-glow: 120 100% 55%;    /* Brighter military green */
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 0 85% 45%;          /* War red */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 0 0% 10%;               /* Dark grey */
+    --muted-foreground: 0 0% 70%;
+    
+    --accent: 35 100% 50%;           /* Camouflage orange */
+    --accent-foreground: 0 0% 0%;
+    
+    --destructive: 0 85% 55%;        /* Bright red */
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 15%;              /* Dark border */
+    --input: 0 0% 8%;                /* Input background */
+    --ring: 120 100% 45%;            /* Focus ring - green */
+    
+    --card: 0 0% 8%;                 /* Card background */
+    --card-foreground: 0 0% 95%;
+    
+    --popover: 0 0% 8%;              /* Popover background */
+    --popover-foreground: 0 0% 95%;
+    
+    --success: 120 100% 40%;         /* Military success */
+    --warning: 35 100% 45%;          /* War warning */
+    --error: 0 85% 60%;              /* War error */
+    
+    /* War Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(0 0% 3%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--muted)) 0%, hsl(0 0% 6%) 100%);
+    --gradient-shimmer: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent);
+    
+    /* War Shadows */
+    --shadow-glow: 0 0 50px hsl(var(--primary) / 0.4);
+    --shadow-card: 0 15px 40px -15px hsl(var(--background) / 0.9);
+    --shadow-float: 0 20px 60px -20px hsl(var(--primary) / 0.3);
+  }
+
   .dark {
     --background: 223 47% 11%;
     --foreground: 213 31% 91%;
@@ -86,6 +132,7 @@
     @apply bg-background text-foreground font-sans;
     background: var(--gradient-hero);
     min-height: 100vh;
+    transition: all 0.5s ease-in-out;
   }
   
   /* Enhanced scrollbar */
@@ -148,6 +195,29 @@
     @apply text-primary-glow;
     text-shadow: 0 0 15px hsl(var(--primary) / 0.6);
     transform: scale(1.05);
+  }
+
+  .hero-background {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .hero-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, hsl(var(--background) / 0.8) 0%, hsl(var(--background) / 0.6) 50%, hsl(var(--background) / 0.8) 100%);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
   }
 }
 

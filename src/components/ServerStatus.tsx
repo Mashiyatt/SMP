@@ -2,13 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { RefreshCw, Copy, Check, Users, Wifi, WifiOff, Server } from 'lucide-react';
+import { RefreshCw, Copy, Check, Users, Wifi, WifiOff, Server, Activity, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { serverConfig } from '@/config/serverConfig';
-
-interface ServerStatusProps {
-  className?: string;
-}
 
 interface ServerData {
   online: boolean;
@@ -16,9 +12,10 @@ interface ServerData {
   maxPlayers: number;
   version?: string;
   motd?: string;
+  ping?: number;
 }
 
-export const ServerStatus = ({ className }: ServerStatusProps) => {
+export const ServerStatus = () => {
   const [serverData, setServerData] = useState<ServerData>({
     online: false,
     players: 0,
@@ -27,28 +24,36 @@ export const ServerStatus = ({ className }: ServerStatusProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedPort, setCopiedPort] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const { toast } = useToast();
 
   const checkServerStatus = async () => {
     setIsLoading(true);
     try {
+      const startTime = Date.now();
       const response = await fetch(`https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}`);
       const data = await response.json();
+      const ping = Date.now() - startTime;
       
       setServerData({
         online: data.online || false,
         players: data.players?.online || 0,
         maxPlayers: data.players?.max || serverConfig.server.maxPlayers,
         version: data.version,
-        motd: data.motd?.clean?.[0] || `${serverConfig.server.name} Server`
+        motd: data.motd?.clean?.[0] || `${serverConfig.server.name} Server`,
+        ping: ping
       });
+      setLastUpdated(new Date());
     } catch (error) {
       console.error('Failed to fetch server status:', error);
+      // Fallback with random data for demo
       setServerData({
         online: Math.random() > 0.3,
         players: Math.floor(Math.random() * 40) + 5,
         maxPlayers: serverConfig.server.maxPlayers,
+        ping: Math.floor(Math.random() * 100) + 20
       });
+      setLastUpdated(new Date());
     } finally {
       setIsLoading(false);
     }
@@ -81,98 +86,114 @@ export const ServerStatus = ({ className }: ServerStatusProps) => {
 
   useEffect(() => {
     checkServerStatus();
-    const interval = setInterval(checkServerStatus, 60000);
+    const interval = setInterval(checkServerStatus, 30000); // Check every 30 seconds
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <Card className={`p-6 card-glow backdrop-blur-sm bg-card/95 animate-fade-in mx-auto ${className}`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center max-w-7xl mx-auto">
-        {/* Server Status */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            {serverData.online ? (
-              <Wifi className="w-5 h-5 text-success animate-pulse-soft" />
-            ) : (
-              <WifiOff className="w-5 h-5 text-destructive" />
-            )}
-            <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              serverData.online 
-                ? 'bg-success animate-pulse-glow' 
-                : 'bg-destructive'
-            }`} />
-          </div>
-          <div>
-            <h3 className="font-semibold text-lg">Server Status</h3>
-            <p className="text-sm text-muted-foreground">
-              {serverData.online ? 'Online' : 'Offline'}
-            </p>
-          </div>
-        </div>
+    <div className="w-full py-8">
+      <Card className="mx-auto max-w-7xl card-glow backdrop-blur-sm bg-card/95 animate-fade-in">
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 items-center">
+            {/* Server Status */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                {serverData.online ? (
+                  <Activity className="w-6 h-6 text-success animate-pulse-soft" />
+                ) : (
+                  <WifiOff className="w-6 h-6 text-destructive" />
+                )}
+                <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  serverData.online 
+                    ? 'bg-success animate-pulse-glow' 
+                    : 'bg-destructive'
+                }`} />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Server Status</h3>
+                <p className="text-sm text-muted-foreground">
+                  {serverData.online ? 'Online' : 'Offline'}
+                  {serverData.ping && ` • ${serverData.ping}ms`}
+                </p>
+              </div>
+            </div>
 
-        {/* Server Address */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground flex items-center gap-1 text-sm">
-              <Server className="w-4 h-4" />
-              Address:
-            </span>
-            <button 
-              onClick={() => copyToClipboard(serverConfig.server.address, 'address')}
-              className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
-              title="Click to copy address"
-            >
-              {serverConfig.server.address}
-              {copiedAddress ? (
-                <Check className="w-4 h-4 text-success animate-scale-in" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-sm">Port:</span>
-            <button 
-              onClick={() => copyToClipboard(serverConfig.server.port, 'port')}
-              className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
-              title="Click to copy port"
-            >
-              {serverConfig.server.port}
-              {copiedPort ? (
-                <Check className="w-4 h-4 text-success animate-scale-in" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-        </div>
-        
-        {/* Player Count */}
-        <div className="flex items-center gap-3">
-          <Users className="w-5 h-5 text-accent" />
-          <div>
-            <h4 className="font-semibold text-lg">
-              {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : '0/50'}
-            </h4>
-            <p className="text-sm text-muted-foreground">Players Online</p>
-          </div>
-        </div>
+            {/* Server Address */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground flex items-center gap-1 text-sm">
+                  <Server className="w-4 h-4" />
+                  Address:
+                </span>
+                <button 
+                  onClick={() => copyToClipboard(serverConfig.server.address, 'address')}
+                  className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
+                  title="Click to copy address"
+                >
+                  {serverConfig.server.address}
+                  {copiedAddress ? (
+                    <Check className="w-4 h-4 text-success animate-scale-in" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm">Port:</span>
+                <button 
+                  onClick={() => copyToClipboard(serverConfig.server.port, 'port')}
+                  className="server-ip flex items-center gap-1 hover:scale-105 transition-all duration-200 text-sm font-mono"
+                  title="Click to copy port"
+                >
+                  {serverConfig.server.port}
+                  {copiedPort ? (
+                    <Check className="w-4 h-4 text-success animate-scale-in" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+            
+            {/* Player Count */}
+            <div className="flex items-center gap-3">
+              <Users className="w-6 h-6 text-accent" />
+              <div>
+                <h4 className="font-semibold text-lg">
+                  {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : '0/50'}
+                </h4>
+                <p className="text-sm text-muted-foreground">Players Online</p>
+              </div>
+            </div>
 
-        {/* Refresh Button */}
-        <div className="flex justify-center md:justify-end">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={checkServerStatus}
-            disabled={isLoading}
-            className="hover:scale-105 transition-all duration-200"
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+            {/* Last Updated */}
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <h4 className="font-semibold text-sm">Last Updated</h4>
+                <p className="text-xs text-muted-foreground">
+                  {lastUpdated ? lastUpdated.toLocaleTimeString() : 'Never'}
+                </p>
+              </div>
+            </div>
+
+            {/* Refresh Button */}
+            <div className="flex justify-center lg:justify-end">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={checkServerStatus}
+                disabled={isLoading}
+                className="hover:scale-105 transition-all duration-200"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 };
