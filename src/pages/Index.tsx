@@ -93,7 +93,7 @@ const Index = () => {
 
       {/* Hero Section with Background Image */}
       <section 
-        className="relative py-20 lg:py-32 px-6 text-center overflow-hidden hero-background min-h-[80vh] flex items-center"
+        className="relative py-16 lg:py-20 px-6 text-center overflow-hidden hero-background min-h-[60vh] flex items-center"
         style={{ backgroundImage: `url(${heroBackground})` }}
       >
         <div className="container mx-auto max-w-7xl hero-content w-full">

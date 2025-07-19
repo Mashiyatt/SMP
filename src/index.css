@@ -256,6 +256,14 @@
     background-repeat: no-repeat;
   }
 
+  @media (max-width: 768px) {
+    .hero-background {
+      background-attachment: scroll;
+      background-size: cover;
+      background-position: center top;
+    }
+  }
+
   .hero-background::before {
     content: '';
     position: absolute;

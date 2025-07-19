@@ -21,7 +21,7 @@ export const serverConfig = {
     // Example: "https://your-domain.com/hero-image.jpg"
     heroBackground: {
       golden: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1920&q=80", // blue starry night
-      war: "/src/assets/war-battlefield.jpg", // epic battlefield landscape
+      war: "/src/assets/war-battlefield-landscape.jpg", // epic battlefield landscape
     },
     // Theme customization options
     colors: {
