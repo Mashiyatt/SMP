@@ -29,10 +29,12 @@ export const ServerStatus = () => {
   const checkServerStatus = async () => {
     setIsLoading(true);
     try {
-      const startTime = Date.now();
-      const response = await fetch(`https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}`);
+      const startTime = performance.now();
+      const response = await fetch(`https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}`, {
+        cache: 'no-cache'
+      });
       const data = await response.json();
-      const ping = Date.now() - startTime;
+      const ping = Math.round(performance.now() - startTime);
       
       setServerData({
         online: data.online || false,
@@ -91,7 +93,7 @@ export const ServerStatus = () => {
 
   useEffect(() => {
     checkServerStatus();
-    const interval = setInterval(checkServerStatus, 30000); // Check every 30 seconds
+    const interval = setInterval(checkServerStatus, 15000); // Check every 15 seconds for real-time
     return () => clearInterval(interval);
   }, []);
 
@@ -118,7 +120,11 @@ export const ServerStatus = () => {
                 <h3 className="font-semibold text-lg">Server Status</h3>
                 <p className="text-sm text-muted-foreground">
                   {serverData.online ? 'Online' : 'Offline'}
-                  {serverData.ping && ` • ${serverData.ping}ms`}
+                  {serverData.ping && (
+                    <span className="ml-2 px-2 py-1 bg-muted rounded text-xs">
+                      {serverData.ping}ms
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
