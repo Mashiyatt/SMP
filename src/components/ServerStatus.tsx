@@ -90,13 +90,6 @@ export const ServerStatus = () => {
 
       if (serverInfo) {
         setServerData(serverInfo);
-        toast({
-          title: serverInfo.online ? "Server Online" : "Server Offline",
-          description: serverInfo.online 
-            ? `${serverInfo.players}/${serverInfo.maxPlayers} players online` 
-            : "Server is currently offline",
-          variant: serverInfo.online ? "default" : "destructive"
-        });
       } else {
         throw new Error('All API endpoints failed');
       }
@@ -111,11 +104,6 @@ export const ServerStatus = () => {
         ping: undefined
       });
 
-      toast({
-        title: "Connection Failed",
-        description: "Unable to reach the server. It may be offline or unreachable.",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
       setLastUpdated(new Date());
@@ -124,11 +112,6 @@ export const ServerStatus = () => {
 
   const handleRefresh = () => {
     if (cooldownRemaining > 0) {
-      toast({
-        title: "Please Wait",
-        description: `You can refresh again in ${cooldownRemaining} seconds`,
-        variant: "destructive",
-      });
       return;
     }
 
