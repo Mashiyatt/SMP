@@ -58,39 +58,79 @@ export const ServerStatus = () => {
       
       // Add timestamp to prevent caching
       const timestamp = Date.now();
-      const response = await fetch(
-        `https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
-        {
-          cache: 'no-cache',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
+      
+      // Try Bedrock API first, then fallback to Java if needed
+      let response;
+      let data;
+      
+      try {
+        // Bedrock server API endpoint
+        response = await fetch(
+          `https://api.mcsrvstat.us/bedrock/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
+          {
+            cache: 'no-cache',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
           }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`Bedrock API failed: ${response.status}`);
         }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        
+        data = await response.json();
+        
+        // If Bedrock API doesn't work, try regular API
+        if (!data.online && !data.debug?.ping) {
+          throw new Error('Bedrock API returned no data');
+        }
+        
+      } catch (bedrockError) {
+        console.log('Bedrock API failed, trying Java API:', bedrockError);
+        
+        // Fallback to regular Java API
+        response = await fetch(
+          `https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
+          {
+            cache: 'no-cache',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
+          }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`Both APIs failed. HTTP error! status: ${response.status}`);
+        }
+        
+        data = await response.json();
       }
-      
-      const data = await response.json();
       const apiPing = Math.round(performance.now() - startTime);
       
       setServerData({
         online: data.online || false,
         players: data.players?.online || 0,
         maxPlayers: data.players?.max || serverConfig.server.maxPlayers || 50,
-        version: data.version,
-        motd: data.motd?.clean?.[0] || `${serverConfig.server.name} Server`,
+        version: data.version || data.gamemode || 'Unknown',
+        motd: data.motd?.clean?.[0] || data.motd?.raw?.[0] || `${serverConfig.server.name} Server`,
         ping: data.online ? apiPing : undefined // Only show ping if server is online
       });
       setLastUpdated(new Date());
       
       if (isManualRefresh) {
+        const statusMessage = data.online ? 
+          `Server is online with ${data.players?.online || 0} players` : 
+          'Server appears to be offline';
+        
         toast({
           title: "Status Updated",
-          description: "Server status has been refreshed successfully",
+          description: statusMessage,
+          variant: data.online ? "default" : "destructive"
         });
       }
     } catch (error) {
@@ -108,7 +148,7 @@ export const ServerStatus = () => {
       if (isManualRefresh) {
         toast({
           title: "Connection Error",
-          description: "Unable to fetch server status. Please try again later.",
+          description: "Unable to connect to server. The server may be offline or unreachable.",
           variant: "destructive",
         });
       }
