@@ -120,7 +120,7 @@ export const ServerStatus = () => {
                 <h3 className="font-semibold text-lg">Server Status</h3>
                 <p className="text-sm text-muted-foreground">
                   {serverData.online ? 'Online' : 'Offline'}
-                  {serverData.ping && (
+                  {serverData.online && serverData.ping && (
                     <span className="ml-2 px-2 py-1 bg-muted rounded text-xs">
                       {serverData.ping}ms
                     </span>
@@ -172,7 +172,7 @@ export const ServerStatus = () => {
               <Users className="w-6 h-6 text-accent" />
               <div>
                 <h4 className="font-semibold text-lg">
-                  {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : '0/50'}
+                  {serverData.online ? `${serverData.players}/${serverData.maxPlayers}` : '--/--'}
                 </h4>
                 <p className="text-sm text-muted-foreground">Players Online</p>
               </div>

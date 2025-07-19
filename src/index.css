@@ -194,23 +194,15 @@
     transition: all 0.5s ease-in-out;
   }
   
-  /* Enhanced scrollbar */
+  /* Hide scrollbars but keep functionality */
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 0px;
+    background: transparent;
   }
   
-  ::-webkit-scrollbar-track {
-    @apply bg-muted/50;
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-primary/60 rounded-full;
-    transition: all 0.3s ease;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary;
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
 }
 
