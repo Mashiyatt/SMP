@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { RefreshCw, Copy, Check, Users, Wifi, WifiOff, Server, Activity, Clock } from 'lucide-react';
+import { RefreshCw, Copy, Check, Users, Activity, WifiOff, Server, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { serverConfig } from '@/config/serverConfig';
 
@@ -18,150 +18,133 @@ export const ServerStatus = () => {
   const [serverData, setServerData] = useState<ServerData>({
     online: false,
     players: 0,
-    maxPlayers: serverConfig.server.maxPlayers,
+    maxPlayers: serverConfig.server.maxPlayers || 50,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedPort, setCopiedPort] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
-  const [canRefresh, setCanRefresh] = useState(true);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const { toast } = useToast();
 
-  const checkServerStatus = async (isManualRefresh = false) => {
-    if (isLoading) return;
-    
-    // Check cooldown for manual refresh (5 seconds)
-    if (isManualRefresh && lastRefreshTime) {
-      const timeSinceLastRefresh = Date.now() - lastRefreshTime.getTime();
-      const cooldownTime = 5000; // 5 seconds
-      
-      if (timeSinceLastRefresh < cooldownTime) {
-        const remainingTime = Math.ceil((cooldownTime - timeSinceLastRefresh) / 1000);
-        toast({
-          title: "Please wait",
-          description: `You can refresh again in ${remainingTime} seconds`,
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-    
+  const fetchServerStatus = async () => {
+    if (isLoading || cooldownRemaining > 0) return;
+
     setIsLoading(true);
-    if (isManualRefresh) {
-      setCanRefresh(false);
-      setLastRefreshTime(new Date());
-    }
-    
+    const startTime = performance.now();
+
     try {
-      const startTime = performance.now();
-      
-      // Add timestamp to prevent caching
-      const timestamp = Date.now();
-      
-      // Try Bedrock API first, then fallback to Java if needed
-      let response;
-      let data;
-      
-      try {
-        // Bedrock server API endpoint
-        response = await fetch(
-          `https://api.mcsrvstat.us/bedrock/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
-          {
-            cache: 'no-cache',
+      // Try multiple API endpoints for better reliability
+      const endpoints = [
+        `https://api.mcsrvstat.us/bedrock/3/${serverConfig.server.address}:${serverConfig.server.port}`,
+        `https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}`,
+        `https://api.mcstatus.io/v2/status/bedrock/${serverConfig.server.address}:${serverConfig.server.port}`,
+        `https://api.mcstatus.io/v2/status/java/${serverConfig.server.address}:${serverConfig.server.port}`
+      ];
+
+      let serverInfo = null;
+      let apiPing = 0;
+
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint, {
+            method: 'GET',
             headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0'
+              'Accept': 'application/json',
+            },
+            cache: 'no-store'
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            apiPing = Math.round(performance.now() - startTime);
+            
+            // Handle different API response formats
+            if (data.online || data.status === 'online') {
+              serverInfo = {
+                online: true,
+                players: data.players?.online || data.players_online || 0,
+                maxPlayers: data.players?.max || data.players_max || serverConfig.server.maxPlayers || 50,
+                version: data.version || data.software?.name || 'Unknown',
+                motd: data.motd?.clean?.[0] || data.motd?.raw || data.description || `${serverConfig.server.name} Server`,
+                ping: apiPing
+              };
+              break;
+            } else if (data.hostname || data.ip) {
+              // Server exists but is offline
+              serverInfo = {
+                online: false,
+                players: 0,
+                maxPlayers: serverConfig.server.maxPlayers || 50,
+                version: undefined,
+                motd: undefined,
+                ping: undefined
+              };
             }
           }
-        );
-        
-        if (!response.ok) {
-          throw new Error(`Bedrock API failed: ${response.status}`);
+        } catch (endpointError) {
+          console.log(`Endpoint ${endpoint} failed:`, endpointError);
+          continue;
         }
-        
-        data = await response.json();
-        
-        // If Bedrock API doesn't work, try regular API
-        if (!data.online && !data.debug?.ping) {
-          throw new Error('Bedrock API returned no data');
-        }
-        
-      } catch (bedrockError) {
-        console.log('Bedrock API failed, trying Java API:', bedrockError);
-        
-        // Fallback to regular Java API
-        response = await fetch(
-          `https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
-          {
-            cache: 'no-cache',
-            headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0'
-            }
-          }
-        );
-        
-        if (!response.ok) {
-          throw new Error(`Both APIs failed. HTTP error! status: ${response.status}`);
-        }
-        
-        data = await response.json();
       }
-      const apiPing = Math.round(performance.now() - startTime);
-      
-      setServerData({
-        online: data.online || false,
-        players: data.players?.online || 0,
-        maxPlayers: data.players?.max || serverConfig.server.maxPlayers || 50,
-        version: data.version || data.gamemode || 'Unknown',
-        motd: data.motd?.clean?.[0] || data.motd?.raw?.[0] || `${serverConfig.server.name} Server`,
-        ping: data.online ? apiPing : undefined // Only show ping if server is online
-      });
-      setLastUpdated(new Date());
-      
-      if (isManualRefresh) {
-        const statusMessage = data.online ? 
-          `Server is online with ${data.players?.online || 0} players` : 
-          'Server appears to be offline';
-        
+
+      if (serverInfo) {
+        setServerData(serverInfo);
         toast({
-          title: "Status Updated",
-          description: statusMessage,
-          variant: data.online ? "default" : "destructive"
+          title: serverInfo.online ? "Server Online" : "Server Offline",
+          description: serverInfo.online 
+            ? `${serverInfo.players}/${serverInfo.maxPlayers} players online` 
+            : "Server is currently offline",
+          variant: serverInfo.online ? "default" : "destructive"
         });
+      } else {
+        throw new Error('All API endpoints failed');
       }
+
     } catch (error) {
       console.error('Failed to fetch server status:', error);
       
-      // Set offline status on error
       setServerData({
         online: false,
         players: 0,
         maxPlayers: serverConfig.server.maxPlayers || 50,
         ping: undefined
       });
-      setLastUpdated(new Date());
-      
-      if (isManualRefresh) {
-        toast({
-          title: "Connection Error",
-          description: "Unable to connect to server. The server may be offline or unreachable.",
-          variant: "destructive",
-        });
-      }
+
+      toast({
+        title: "Connection Failed",
+        description: "Unable to reach the server. It may be offline or unreachable.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
-      
-      // Re-enable refresh after cooldown
-      if (isManualRefresh) {
-        setTimeout(() => {
-          setCanRefresh(true);
-        }, 5000); // 5 second cooldown
-      }
+      setLastUpdated(new Date());
     }
+  };
+
+  const handleRefresh = () => {
+    if (cooldownRemaining > 0) {
+      toast({
+        title: "Please Wait",
+        description: `You can refresh again in ${cooldownRemaining} seconds`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Set 5-second cooldown
+    setCooldownRemaining(5);
+    const cooldownTimer = setInterval(() => {
+      setCooldownRemaining(prev => {
+        if (prev <= 1) {
+          clearInterval(cooldownTimer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    fetchServerStatus();
   };
 
   const copyToClipboard = async (text: string, type: 'address' | 'port') => {
@@ -189,9 +172,12 @@ export const ServerStatus = () => {
     }
   };
 
+  // Auto-fetch on component mount and set up auto-refresh
   useEffect(() => {
-    checkServerStatus();
-    const interval = setInterval(() => checkServerStatus(false), 30000); // Check every 30 seconds automatically
+    fetchServerStatus();
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchServerStatus, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -292,13 +278,13 @@ export const ServerStatus = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => checkServerStatus(true)}
-                disabled={isLoading || !canRefresh}
+                onClick={handleRefresh}
+                disabled={isLoading || cooldownRemaining > 0}
                 className="hover:scale-105 transition-all duration-200"
-                title={!canRefresh ? "Please wait before refreshing again" : "Refresh server status"}
+                title={cooldownRemaining > 0 ? `Wait ${cooldownRemaining}s` : "Refresh server status"}
               >
                 <RefreshCw className={`w-4 h-4 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
-                {isLoading ? 'Refreshing...' : 'Refresh'}
+                {cooldownRemaining > 0 ? `${cooldownRemaining}s` : isLoading ? 'Checking...' : 'Refresh'}
               </Button>
             </div>
           </div>
