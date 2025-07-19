@@ -12,7 +12,7 @@ export const serverConfig = {
 
   // Theme Configuration
   theme: {
-    current: "war", // "golden" or "war"
+    current: "golden", // "golden" or "war"
     
     // Hero Background Configuration
     // To change hero background: Replace URLs below with your desired images
@@ -20,7 +20,7 @@ export const serverConfig = {
     // Format: Direct image URLs (Unsplash, your own hosting, etc.)
     // Example: "https://your-domain.com/hero-image.jpg"
     heroBackground: {
-      golden: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1920&q=80", // blue starry night
+      golden: "https://i.postimg.cc/50CrGDWQ/d3d088553316f84bc504cd251f0021aa6f58e0bc-1.png", // blue starry night
       war: "/src/assets/war-battlefield-landscape.jpg", // epic battlefield landscape
     },
     // Theme customization options
