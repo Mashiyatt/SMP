@@ -24,17 +24,58 @@ export const ServerStatus = () => {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedPort, setCopiedPort] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
+  const [canRefresh, setCanRefresh] = useState(true);
   const { toast } = useToast();
 
-  const checkServerStatus = async () => {
+  const checkServerStatus = async (isManualRefresh = false) => {
+    if (isLoading) return;
+    
+    // Check cooldown for manual refresh (5 seconds)
+    if (isManualRefresh && lastRefreshTime) {
+      const timeSinceLastRefresh = Date.now() - lastRefreshTime.getTime();
+      const cooldownTime = 5000; // 5 seconds
+      
+      if (timeSinceLastRefresh < cooldownTime) {
+        const remainingTime = Math.ceil((cooldownTime - timeSinceLastRefresh) / 1000);
+        toast({
+          title: "Please wait",
+          description: `You can refresh again in ${remainingTime} seconds`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setIsLoading(true);
+    if (isManualRefresh) {
+      setCanRefresh(false);
+      setLastRefreshTime(new Date());
+    }
+    
     try {
       const startTime = performance.now();
-      const response = await fetch(`https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}`, {
-        cache: 'no-cache'
-      });
+      
+      // Add timestamp to prevent caching
+      const timestamp = Date.now();
+      const response = await fetch(
+        `https://api.mcsrvstat.us/3/${serverConfig.server.address}:${serverConfig.server.port}?t=${timestamp}`, 
+        {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
-      const ping = Math.round(performance.now() - startTime);
+      const apiPing = Math.round(performance.now() - startTime);
       
       setServerData({
         online: data.online || false,
@@ -42,11 +83,19 @@ export const ServerStatus = () => {
         maxPlayers: data.players?.max || serverConfig.server.maxPlayers || 50,
         version: data.version,
         motd: data.motd?.clean?.[0] || `${serverConfig.server.name} Server`,
-        ping: ping
+        ping: data.online ? apiPing : undefined // Only show ping if server is online
       });
       setLastUpdated(new Date());
+      
+      if (isManualRefresh) {
+        toast({
+          title: "Status Updated",
+          description: "Server status has been refreshed successfully",
+        });
+      }
     } catch (error) {
       console.error('Failed to fetch server status:', error);
+      
       // Set offline status on error
       setServerData({
         online: false,
@@ -56,13 +105,22 @@ export const ServerStatus = () => {
       });
       setLastUpdated(new Date());
       
-      toast({
-        title: "Connection Error",
-        description: "Unable to fetch real-time server status",
-        variant: "destructive",
-      });
+      if (isManualRefresh) {
+        toast({
+          title: "Connection Error",
+          description: "Unable to fetch server status. Please try again later.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
+      
+      // Re-enable refresh after cooldown
+      if (isManualRefresh) {
+        setTimeout(() => {
+          setCanRefresh(true);
+        }, 5000); // 5 second cooldown
+      }
     }
   };
 
@@ -93,7 +151,7 @@ export const ServerStatus = () => {
 
   useEffect(() => {
     checkServerStatus();
-    const interval = setInterval(checkServerStatus, 15000); // Check every 15 seconds for real-time
+    const interval = setInterval(() => checkServerStatus(false), 30000); // Check every 30 seconds automatically
     return () => clearInterval(interval);
   }, []);
 
@@ -194,12 +252,13 @@ export const ServerStatus = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={checkServerStatus}
-                disabled={isLoading}
+                onClick={() => checkServerStatus(true)}
+                disabled={isLoading || !canRefresh}
                 className="hover:scale-105 transition-all duration-200"
+                title={!canRefresh ? "Please wait before refreshing again" : "Refresh server status"}
               >
                 <RefreshCw className={`w-4 h-4 mr-2 transition-transform duration-300 ${isLoading ? 'animate-spin' : ''}`} />
-                Refresh
+                {isLoading ? 'Refreshing...' : 'Refresh'}
               </Button>
             </div>
           </div>
