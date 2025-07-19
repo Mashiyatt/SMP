@@ -243,6 +243,25 @@
     }
   }
   
+  @keyframes float-bg {
+    0%, 100% { 
+      transform: scale(1) translateY(0px);
+      opacity: 0.3;
+    }
+    25% { 
+      transform: scale(1.05) translateY(-10px);
+      opacity: 0.25;
+    }
+    50% { 
+      transform: scale(1.02) translateY(-5px);
+      opacity: 0.35;
+    }
+    75% { 
+      transform: scale(1.03) translateY(-8px);
+      opacity: 0.28;
+    }
+  }
+  
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -271,5 +290,9 @@
   
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
+  }
+  
+  .animate-float-bg {
+    animation: float-bg 20s ease-in-out infinite;
   }
 }

@@ -78,6 +78,17 @@ const Index = () => {
     <div className="min-h-screen relative">
       {/* Hero Section with Enhanced Hero Text */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 -z-10">
+          <img 
+            src="/2a12588c3cae5a1b59e2154ca8a975349463725d.webp"
+            alt="Golden SMP Background"
+            className="w-full h-full object-cover opacity-30 animate-float-bg"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+        </div>
+        
         <div className="container mx-auto max-w-6xl">
           {/* Animated background elements */}
           <div className="absolute inset-0 -z-10">
