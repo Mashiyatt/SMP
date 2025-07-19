@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -38,7 +37,7 @@ export const ServerStatus = () => {
       setServerData({
         online: data.online || false,
         players: data.players?.online || 0,
-        maxPlayers: data.players?.max || serverConfig.server.maxPlayers,
+        maxPlayers: data.players?.max || serverConfig.server.maxPlayers || 50,
         version: data.version,
         motd: data.motd?.clean?.[0] || `${serverConfig.server.name} Server`,
         ping: ping
@@ -46,14 +45,20 @@ export const ServerStatus = () => {
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Failed to fetch server status:', error);
-      // Fallback with random data for demo
+      // Set offline status on error
       setServerData({
-        online: Math.random() > 0.3,
-        players: Math.floor(Math.random() * 40) + 5,
-        maxPlayers: serverConfig.server.maxPlayers,
-        ping: Math.floor(Math.random() * 100) + 20
+        online: false,
+        players: 0,
+        maxPlayers: serverConfig.server.maxPlayers || 50,
+        ping: undefined
       });
       setLastUpdated(new Date());
+      
+      toast({
+        title: "Connection Error",
+        description: "Unable to fetch real-time server status",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

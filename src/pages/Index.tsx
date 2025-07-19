@@ -24,9 +24,11 @@ import {
   Crosshair
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { serverConfig } from '@/config/serverConfig';
 import { useTheme } from '@/contexts/ThemeContext';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const iconMap = {
   Sword,
@@ -40,7 +42,15 @@ const iconMap = {
 const Index = () => {
   const [addressCopied, setAddressCopied] = useState(false);
   const { toast } = useToast();
-  const { theme, toggleTheme, heroBackground } = useTheme();
+  const { theme, heroBackground } = useTheme();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
+  }, []);
 
   const joinMinecraft = async () => {
     const serverAddress = `${serverConfig.server.address}:${serverConfig.server.port}`;
@@ -80,27 +90,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* Theme Toggle Button */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleTheme}
-          className="hover:scale-105 transition-all duration-300 group backdrop-blur-sm"
-        >
-          {theme === 'golden' ? (
-            <>
-              <Crosshair className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              War Mode
-            </>
-          ) : (
-            <>
-              <Palette className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-              Golden Mode
-            </>
-          )}
-        </Button>
-      </div>
 
       {/* Hero Section with Background Image */}
       <section 
@@ -124,9 +113,11 @@ const Index = () => {
             {serverConfig.server.description}
           </p>
           
-          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '400ms' }}>
-            {serverConfig.server.tagline}
-          </p>
+          <div className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed animate-fade-in px-4" style={{ animationDelay: '400ms' }}>
+            <p className="text-center sm:text-left lg:text-center">
+              {serverConfig.server.tagline}
+            </p>
+          </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
             <Button 
@@ -160,14 +151,14 @@ const Index = () => {
       </section>
 
       {/* Full-width Server Status Section */}
-      <section className="w-full bg-muted/20 border-y border-border">
+      <section className="w-full bg-muted/20 border-y border-border" data-aos="fade-up">
         <div className="w-full">
           <ServerStatus />
         </div>
       </section>
 
       {/* About Section */}
-      <section className="py-12 px-6">
+      <section className="py-12 px-6" data-aos="fade-up" data-aos-delay="200">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
@@ -183,7 +174,7 @@ const Index = () => {
       </section>
 
       {/* Main Content Tabs */}
-      <section className="py-8 px-6">
+      <section className="py-8 px-6" data-aos="fade-up" data-aos-delay="400">
         <div className="container mx-auto max-w-6xl">
           <Tabs defaultValue="factions" className="w-full">
             <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto mb-12">
@@ -203,7 +194,7 @@ const Index = () => {
 
             {/* Factions Tab */}
             <TabsContent value="factions" className="space-y-12">
-              <div className="text-center">
+              <div className="text-center" data-aos="fade-up">
                 <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
                   <Shield className="w-8 h-8 text-primary" />
                   Active Factions
@@ -215,7 +206,7 @@ const Index = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {serverConfig.factions.map((faction, index) => (
-                  <div key={faction.name} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 150}ms` }}>
+                  <div key={faction.name} className="hover:scale-105 transition-all duration-300" data-aos="fade-up" data-aos-delay={index * 100}>
                     <FactionCard {...faction} />
                   </div>
                 ))}
@@ -224,7 +215,7 @@ const Index = () => {
 
             {/* Features Tab */}
             <TabsContent value="features" className="space-y-12">
-              <div className="text-center">
+              <div className="text-center" data-aos="fade-up">
                 <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
                   <Zap className="w-8 h-8 text-primary" />
                   Server Features
@@ -238,7 +229,7 @@ const Index = () => {
                 {serverConfig.features.map((feature, index) => {
                   const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
                   return (
-                    <div key={feature.title} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
+                    <div key={feature.title} className="hover:scale-105 transition-all duration-300" data-aos="fade-up" data-aos-delay={index * 100}>
                       <FeatureCard 
                         icon={IconComponent} 
                         title={feature.title}
@@ -253,7 +244,7 @@ const Index = () => {
 
             {/* News Tab */}
             <TabsContent value="news" className="space-y-12">
-              <div className="text-center">
+              <div className="text-center" data-aos="fade-up">
                 <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
                   <Newspaper className="w-8 h-8 text-primary" />
                   Latest News
@@ -265,7 +256,7 @@ const Index = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {serverConfig.news.map((newsItem, index) => (
-                  <div key={newsItem.id} className="animate-fade-in hover:scale-105 transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
+                  <div key={newsItem.id} className="hover:scale-105 transition-all duration-300" data-aos="fade-up" data-aos-delay={index * 100}>
                     <NewsCard {...newsItem} />
                   </div>
                 ))}
@@ -276,7 +267,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
+      <footer className="py-12 px-6 border-t border-border" data-aos="fade-up">
         <div className="container mx-auto max-w-6xl text-center">
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gradient mb-2">{serverConfig.server.name}</h3>

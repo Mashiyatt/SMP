@@ -24,8 +24,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<Theme>(serverConfig.theme.current as Theme);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'golden' ? 'war' : 'golden';
-    setTheme(newTheme);
+    // Theme is controlled by config only
+    return;
   };
 
   const heroBackground = serverConfig.theme.heroBackground[theme];

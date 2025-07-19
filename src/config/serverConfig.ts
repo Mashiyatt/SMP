@@ -12,10 +12,10 @@ export const serverConfig = {
 
   // Theme Configuration
   theme: {
-    current: "golden", // "golden" or "war"
+    current: "war", // "golden" or "war"
     heroBackground: {
-      golden: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1920&q=80", // blue starry night
-      war: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80", // matrix movie still
+      golden: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1920&q=80", // minecraft cave/mining
+      war: "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?auto=format&fit=crop&w=1920&q=80", // dark battle/war themed
     }
   },
 
