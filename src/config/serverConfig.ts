@@ -12,7 +12,7 @@ export const serverConfig = {
 
   // Theme Configuration
   theme: {
-    current: "golden", // "golden" or "war"
+    current: "war", // "golden" or "war"
     
     // Hero Background Configuration
     // To change hero background: Replace URLs below with your desired images
