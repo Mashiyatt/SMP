@@ -253,6 +253,7 @@
     background-position: center;
     background-attachment: fixed;
     position: relative;
+    background-repeat: no-repeat;
   }
 
   .hero-background::before {
@@ -262,7 +263,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, hsl(var(--background) / 0.8) 0%, hsl(var(--background) / 0.6) 50%, hsl(var(--background) / 0.8) 100%);
+    background: linear-gradient(135deg, hsl(var(--background) / 0.7) 0%, hsl(var(--background) / 0.4) 50%, hsl(var(--background) / 0.7) 100%);
     z-index: 1;
   }
 

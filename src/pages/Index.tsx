@@ -21,7 +21,7 @@ import {
   Copy,
   Newspaper,
   Palette,
-  Crosshair
+  Swords
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
@@ -93,46 +93,47 @@ const Index = () => {
 
       {/* Hero Section with Background Image */}
       <section 
-        className="relative py-20 px-6 text-center overflow-hidden hero-background"
+        className="relative py-20 lg:py-32 px-6 text-center overflow-hidden hero-background min-h-[80vh] flex items-center"
         style={{ backgroundImage: `url(${heroBackground})` }}
       >
-        <div className="container mx-auto max-w-6xl hero-content">
+        <div className="container mx-auto max-w-7xl hero-content w-full">
           {/* Animated background elements */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute top-20 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
             <div className="absolute bottom-20 right-1/4 w-48 h-48 bg-accent/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse-soft" />
           </div>
           
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-hero font-black mb-6 animate-fade-in relative">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-hero font-black mb-8 animate-fade-in relative leading-tight">
             <span className="text-gradient animate-bounce-gentle drop-shadow-2xl">
               {serverConfig.server.name}
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in font-medium" style={{ animationDelay: '200ms' }}>
+          <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 animate-fade-in font-medium max-w-4xl mx-auto" style={{ animationDelay: '200ms' }}>
             {serverConfig.server.description}
           </p>
           
-          <div className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed animate-fade-in px-4" style={{ animationDelay: '400ms' }}>
-            <p className="text-center sm:text-left lg:text-center">
+          <div className="text-base md:text-lg text-muted-foreground mb-12 max-w-5xl mx-auto leading-relaxed animate-fade-in px-4" style={{ animationDelay: '400ms' }}>
+            <p className="text-center">
               {serverConfig.server.tagline}
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in" style={{ animationDelay: '600ms' }}>
             <Button 
               size="lg" 
-              className="gold-glow hover:scale-105 transition-all duration-300 group text-lg px-8 py-4"
+              className="gold-glow hover:scale-105 transition-all duration-300 group text-lg px-10 py-6 shadow-2xl"
               onClick={joinMinecraft}
             >
               {addressCopied ? (
                 <>
-                  <Target className="w-5 h-5 mr-2 animate-scale-in" />
+                  <Target className="w-6 h-6 mr-3 animate-scale-in" />
                   Opening Minecraft!
                 </>
               ) : (
                 <>
-                  <Copy className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  <Swords className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform duration-300" />
                   Join the Battle
                 </>
               )}
@@ -140,10 +141,10 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="lg"
-              className="hover:scale-105 transition-all duration-300 group text-lg px-8 py-4 backdrop-blur-sm"
+              className="hover:scale-105 transition-all duration-300 group text-lg px-10 py-6 backdrop-blur-sm border-2 shadow-xl hover:shadow-2xl"
               onClick={() => window.open(serverConfig.social.discord, '_blank')}
             >
-              <MessageCircle className="w-5 h-5 mr-2 group-hover:bounce transition-all duration-300" />
+              <MessageCircle className="w-6 h-6 mr-3 group-hover:bounce transition-all duration-300" />
               Join Discord
             </Button>
           </div>
@@ -288,7 +289,7 @@ const Index = () => {
           </div>
           
           <p className="text-sm text-muted-foreground">
-            © 2025 {serverConfig.server.name}. All rights reserved. | Created by Mashiyatt
+            © 2025 {serverConfig.server.name}. All rights reserved. | Created by Mashiyat
           </p>
         </div>
       </footer>
